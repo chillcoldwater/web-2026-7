@@ -8,7 +8,7 @@ const PORT = 3000;
 app.use(logger);
 app.use(express.json());
 app.use(staticMiddleware);
-app.use("/user", userRouter);
+app.use("/users", userRouter);
 app.listen(PORT, () => {
   console.log(`App listening on ${PORT}`);
 });
