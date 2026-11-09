@@ -1,9 +1,14 @@
-import express, { type Express, type Request, type Response } from 'express';
+import express, { type Express } from "express";
+import { logger } from "./middlewares/logger.ts";
+import { staticMiddleware } from "./middlewares/static.ts";
+import { userRouter } from "./routers/user.router.ts";
 
 const app: Express = express();
-
-app.get('/', (req: Request, res: Response) => {
-  res.send('Hello World!aaa');
+const PORT = 3000;
+app.use(logger);
+app.use(express.json());
+app.use(staticMiddleware);
+app.use("/user", userRouter);
+app.listen(PORT, () => {
+  console.log(`App listening on ${PORT}`);
 });
-
-app.listen(3000);
