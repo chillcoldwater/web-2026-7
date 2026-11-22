@@ -5,6 +5,7 @@ import { staticMiddleware } from "./middlewares/static.ts";
 import { userRouter } from "./routers/user.router.ts";
 import { orderRouter } from "./routers/order.router.ts";
 import { productRouter } from "./routers/product.router.ts";
+import { authRouter } from "./routers/auth.router.ts";
 import swaggerUi from "swagger-ui-express";
 import { openapiSpecification } from "./utils/swagger.ts";
 
@@ -19,7 +20,8 @@ app.use(staticMiddleware);
 app.use("/users", userRouter);
 app.use("/products", productRouter);
 app.use("/orders", orderRouter);
-app.use;
+app.use("/login", authRouter)
+
 app.listen(PORT, () => {
   console.log(`App listening on ${PORT}`);
 });
