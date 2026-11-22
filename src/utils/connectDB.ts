@@ -1,6 +1,4 @@
 import mongoose from "mongoose";
-import { exit } from "node:process";
-import { stringify } from "node:querystring";
 
 const connectDB = async () => {
   try {

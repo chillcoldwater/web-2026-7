@@ -1,6 +1,6 @@
 import express, { type Request, type Response } from "express";
 import { User } from "../models/User.ts";
-
+import bcrypt from "bcrypt"
 
 export const userRouter = express.Router();
 
@@ -140,6 +140,7 @@ userRouter.get("/:id", async (req: Request, res: Response) => {
  *             required:
  *               - name
  *               - email
+ *               - password
  *             properties:
  *               name:
  *                 type: string
@@ -151,6 +152,10 @@ userRouter.get("/:id", async (req: Request, res: Response) => {
  *               age:
  *                 type: number
  *                 example: 18
+ *               password:
+ *                 type: string
+ *                 minLength: 6
+ *                 example: saskfW23_s
  *     responses:
  *       201:
  *         description: Пользователь успешно создан.
@@ -163,23 +168,7 @@ userRouter.get("/:id", async (req: Request, res: Response) => {
  *                   type: string
  *                   example: Добавлен юзер с именем Иван
  *                 user:
- *                   type: object
- *                   properties:
- *                     _id:
- *                       type: string
- *                     name:
- *                       type: string
- *                     email:
- *                       type: string
- *                       format: email
- *                     age:
- *                       type: number
- *                     createdAt:
- *                       type: string
- *                       format: date-time
- *                     updatedAt:
- *                       type: string
- *                       format: date-time
+ *                   $ref: '#/components/schemas/User'
  *       400:
  *         description: Ошибка валидации данных.
  *       409:
@@ -188,11 +177,12 @@ userRouter.get("/:id", async (req: Request, res: Response) => {
  *         description: Неизвестная ошибка сервера.
  */
 
-
 userRouter.post("/", async (req: Request, res: Response) => {
   try {
     const { name, email, age } = req.body;
-    const newUser = await User.create({ name, email, age });
+    const password = req.body.password
+    const passwordHash = await bcrypt.hash(password, 10)
+    const newUser = await User.create({ name, email, age, passwordHash });
 
 
     res
