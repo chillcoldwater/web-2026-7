@@ -2,9 +2,11 @@ import express, { type Request, type Response } from "express";
 import { Order } from "../models/Order.ts";
 import { Product } from "../models/Product.ts";
 import { User } from "../models/User.ts";
+import { requireAuth } from "../middlewares/auth.ts";
 
 export const orderRouter = express.Router();
 
+orderRouter.all("/", requireAuth)
 /**
  * @openapi
  * /orders/:
@@ -13,6 +15,8 @@ export const orderRouter = express.Router();
  *     description: Возвращает список всех заказов вместе с данными пользователя и товара.
  *     tags:
  *       - Orders
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Список заказов.
@@ -39,6 +43,8 @@ orderRouter.get("/", async (req: Request, res: Response) => {
  *     summary: Получить заказ по id
  *     tags:
  *       - Orders
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - name: id
  *         in: path
@@ -91,6 +97,8 @@ orderRouter.get("/:id", async (req: Request, res: Response) => {
  *     description: Создаёт заказ и рассчитывает его стоимость в копейках на основе цены товара.
  *     tags:
  *       - Orders
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *     responses:
@@ -176,6 +184,8 @@ orderRouter.post("/", async (req: Request, res: Response) => {
  *     summary: Обновить статус заказа
  *     tags:
  *       - Orders
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - name: id
  *         in: path
@@ -252,6 +262,8 @@ orderRouter.patch("/:id", async (req: Request, res: Response) => {
  *     summary: Удалить заказ
  *     tags:
  *       - Orders
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - name: id
  *         in: path
