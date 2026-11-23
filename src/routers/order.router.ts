@@ -6,7 +6,8 @@ import { requireAuth } from "../middlewares/auth.ts";
 
 export const orderRouter = express.Router();
 
-orderRouter.all("/", requireAuth)
+orderRouter.use(requireAuth);
+
 /**
  * @openapi
  * /orders/:
@@ -20,6 +21,14 @@ orderRouter.all("/", requireAuth)
  *     responses:
  *       200:
  *         description: Список заказов.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/OrderPopulated'
+ *       401:
+ *         description: Не авторизован.
  *       500:
  *         description: Внутренняя ошибка сервера.
  */
@@ -55,6 +64,10 @@ orderRouter.get("/", async (req: Request, res: Response) => {
  *     responses:
  *       200:
  *         description: Заказ найден.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/OrderPopulated'
  *       400:
  *         description: Некорректный id.
  *       404:
@@ -101,11 +114,27 @@ orderRouter.get("/:id", async (req: Request, res: Response) => {
  *       - bearerAuth: []
  *     requestBody:
  *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/CreateOrderInput'
  *     responses:
  *       201:
  *         description: Заказ создан.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Создан заказ на сумму 199800 копеек
+ *                 order:
+ *                   $ref: '#/components/schemas/Order'
  *       400:
  *         description: Некорректные данные заказа.
+ *       401:
+ *         description: Не авторизован.
  *       404:
  *         description: Пользователь или товар не найдены.
  *       500:
@@ -195,9 +224,23 @@ orderRouter.post("/", async (req: Request, res: Response) => {
  *           type: string
  *     requestBody:
  *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/UpdateOrderStatusInput'
  *     responses:
  *       200:
  *         description: Заказ обновлён.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Заказ с id=65f1a2b3c4d5e6f7a8b9c0d1 был обновлён
+ *                 order:
+ *                   $ref: '#/components/schemas/Order'
  *       400:
  *         description: Некорректный id или статус заказа.
  *       404:
@@ -274,6 +317,16 @@ orderRouter.patch("/:id", async (req: Request, res: Response) => {
  *     responses:
  *       200:
  *         description: Заказ удалён.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Заказ удалён
+ *                 order:
+ *                   $ref: '#/components/schemas/Order'
  *       404:
  *         description: Заказ не найден.
  *       400:
