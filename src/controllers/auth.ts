@@ -1,7 +1,15 @@
 import type { Request, Response } from "express";
 import { User } from "../models/User.ts";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import type { JwtPayload } from "jsonwebtoken";
+import type { Types } from "mongoose";
 
+export const secret = "efmkwdSDkmfeE23Aksdmf";
+export interface AuthJwtPayload extends JwtPayload {
+  id: Types.ObjectId;
+  email: string;
+}
 /**
  * @openapi
  * components:
@@ -28,6 +36,9 @@ import bcrypt from "bcrypt";
  *           example: Пользователь успешно авторизован
  *         user:
  *           $ref: '#/components/schemas/User'
+ *         accessToken:
+ *           type: string
+ *           example: hbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyIkX18iOnsiYWN0a.asdfjfeWdiasS242
  *     Unauthorized:
  *       type: object
  *       properties:
@@ -51,7 +62,13 @@ export async function login(req: Request, res: Response) {
     res.json({ error: "Почта или пароль неправильны" });
     return;
   }
-  
-  res.status(201)
-  res.json({ message: `Пользователь ${user.name} успешно авторизован`, user });
+
+  const accessToken = jwt.sign({ id: user._id, email: user.email }, secret, {
+    algorithm: "HS256",
+    issuer: "web-programming",
+  });
+  const message = `Пользователь ${user.name} успешно авторизован`;
+
+  res.status(201);
+  res.json({ message, user, accessToken });
 }

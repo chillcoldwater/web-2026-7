@@ -1,15 +1,24 @@
-import swaggerJsDoc from "swagger-jsdoc"
+import swaggerJsDoc from "swagger-jsdoc";
 
 const options = {
   failOnErrors: true,
   definition: {
-    openapi: '3.0.0',
+    openapi: "3.0.0",
     info: {
-      title: 'web-technologies project/7',
-      version: '1.0.0',
+      title: "web-technologies project/7",
+      version: "1.0.0",
+    },
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearer: "jwt",
+        },
+      },
     },
   },
-  apis: ['./src/routers/*.ts', './src/models/*.ts', "./src/controllers/*.ts"],
+  apis: ["./src/routers/*.ts", "./src/models/*.ts", "./src/controllers/*.ts"],
 };
 
 export const openapiSpecification = swaggerJsDoc(options);
